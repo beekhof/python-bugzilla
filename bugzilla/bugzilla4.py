@@ -53,14 +53,20 @@ class Bugzilla4(bugzilla.bugzilla3.Bugzilla36):
         idlist = map(lambda i: int(i), idlist)
         r = self._proxy.Bug.get_bugs({'ids':idlist, 'permissive': 1})
         comments = self._proxy.Bug.comments({'ids':idlist})
-            
+
         bugdict = {}
+        user_dict = {}
         for b in r['bugs']:
             # Munge comments into the location and format the caller expects
             b['longdescs'] = []
             for c in comments['bugs'][str(b['id'])]['comments']:
                 log.debug("Comment: "+repr(c))
-                b['longdescs'].append({'body':c['text'], 'author':c['author'], 'email':c['creator'], 'time':c['time']})
+                if not user_dict.has_key(c['author']):
+                    users = self._proxy.User.get({'names':c['author']})
+                    log.debug("User: "+repr(users))
+                    user_dict[c['author']] = users['users'][0]
+
+                b['longdescs'].append({'body':c['text'], 'author':user_dict[c['author']]['real_name'], 'email':c['author'], 'time':c['time']})
 
             bugdict[b['id']] = b
 
