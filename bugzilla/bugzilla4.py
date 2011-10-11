@@ -32,14 +32,38 @@ class Bugzilla4(bugzilla.bugzilla3.Bugzilla36):
                      ('rep_platform','platform'),
                      ('bug_severity','severity'),
                      ('bug_status','status'),
+                     ('blocked','blocks'),
+                     ('dependson','depends_on'),
                      ('fixed_in','cf_fixed_in'))
+
+    createbug_required = ('product','component','version','short_desc','comment')
+
+    def _getbugsimple(self,id):
+        return self._getbugssimple([id])[0]
+
+    def _getbugssimple(self,idlist):
+        idlist = map(lambda i: int(i), idlist)
+        r = self._proxy.Bug.get_bugs({'ids':idlist, 'permissive': 1})
+        bugdict = dict([(b['id'], b) for b in r['bugs']])
+        return [bugdict.get(i) for i in idlist]
 
     def _getbugs(self,idlist):
         '''Return a list of dicts of full bug info for each given bug id.
         bug ids that couldn't be found will return None instead of a dict.'''
         idlist = map(lambda i: int(i), idlist)
         r = self._proxy.Bug.get_bugs({'ids':idlist, 'permissive': 1})
-        bugdict = dict([(b['id'], b) for b in r['bugs']])
+        comments = self._proxy.Bug.comments({'ids':idlist})
+            
+        bugdict = {}
+        for b in r['bugs']:
+            # Munge comments into the location and format the caller expects
+            b['longdescs'] = []
+            for c in comments['bugs'][str(b['id'])]['comments']:
+                log.debug("Comment: "+repr(c))
+                b['longdescs'].append({'body':c['text'], 'author':c['author'], 'email':c['creator'], 'time':c['time']})
+
+            bugdict[b['id']] = b
+
         return [bugdict.get(i) for i in idlist]
 
     def _query(self,query):
