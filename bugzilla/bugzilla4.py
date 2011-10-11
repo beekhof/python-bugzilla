@@ -85,11 +85,9 @@ class Bugzilla4(bugzilla.bugzilla3.Bugzilla36):
 
     def _getbugfields(self):
         '''Get the list of valid fields for Bug objects'''
-        bug = self._getbug(1)
-        keylist = bug.keys()
-        if 'assigned_to' not in keylist:
-            keylist.append('assigned_to')
-        return keylist
+        # XXX BZ4 does have a getbugfields() method, but it doesn't return
+        # the same field names that Bug.get() has or that Bug.update() accepts
+        return self._getbugsimple(1).keys()
 
     # Adapted from rhbz...
 
