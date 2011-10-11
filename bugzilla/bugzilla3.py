@@ -71,8 +71,12 @@ class Bugzilla3(bugzilla.base.BugzillaBase):
         '''Return a dict of full bug info for the given bug id'''
         return self._getbugs([id])[0]
    # Bugzilla3 doesn't have getbugsimple - alias to the full method(s)
-    _getbugsimple = _getbug
-    _getbugssimple = _getbugs
+   # Use real functions so the correct instance of _getbugs is called in subclasses
+    def _getbugsimple(self,id):
+        return self._getbug(id)
+
+    def _getbugssimple(self,idlist):
+        return self._getbugs(idlist)
 
     #---- createbug - call to create a new bug
 
