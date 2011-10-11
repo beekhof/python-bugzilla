@@ -578,7 +578,8 @@ def main():
         optional=['cc', 'blocked', 'dependson']
         for a in optional:
             i = getattr(opt,a)
-            data[a] = i.split(',')
+            if i:
+                data[a] = i.split(',')
         for a in required:
             i = getattr(opt,a)
             if i:
