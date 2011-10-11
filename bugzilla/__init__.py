@@ -10,6 +10,7 @@
 # the full text of the license.
 
 from bugzilla3 import Bugzilla3, Bugzilla32, Bugzilla34, Bugzilla36
+from bugzilla4 import Bugzilla4
 from rhbugzilla import RHBugzilla, RHBugzilla3
 from nvlbugzilla import NovellBugzilla
 from base import version
@@ -19,7 +20,7 @@ log = logging.getLogger("bugzilla")
 
 # advertised class list
 classlist = ['Bugzilla3', 'Bugzilla32', 'Bugzilla34', 'Bugzilla36',
-             'RHBugzilla3', 'NovellBugzilla']
+             'Bugzilla4', 'RHBugzilla3', 'NovellBugzilla']
 
 def getBugzillaClassForURL(url):
     log.debug("Choosing subclass for %s" % url)
@@ -62,6 +63,8 @@ def getBugzillaClassForURL(url):
             c = Bugzilla32
         else:
             c = Bugzilla3
+    elif bzversion.startswith('4.'):
+        c = Bugzilla4
 
     return c
 
