@@ -8,6 +8,9 @@ It also includes a 'bugzilla' commandline client which can be used for quick,
 ad-hoc bugzilla jiggery-pokery. I guess you could use it in shell scripts too,
 but gosh - why not just write something in Python instead?
 
+Install with:
+   sudo python setup.py install -O1
+
 Comments, suggestions, and - most of all - patches are welcomed and encouraged.
 
 Enjoy.
