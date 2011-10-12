@@ -100,6 +100,9 @@ class Bugzilla4(bugzilla.bugzilla3.Bugzilla36):
         updates['ids'] = ids
         return self._proxy.Bug.update(updates)
 
+    def _update_bug(self,id,updates):
+        return self._update_bugs([id], updates)
+
     def _closebug(self,id,resolution,dupeid,fixedin,comment,isprivate,private_in_it,nomail):
         '''Close the given bug. This is the raw call, and no data checking is
         done here. That's up to the closebug method.
