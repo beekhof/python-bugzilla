@@ -121,3 +121,18 @@ class Bugzilla4(bugzilla.bugzilla3.Bugzilla36):
         if comment:
             update['comment'] = { 'comment':comment, 'private':private }
         return self._update_bug(id,update)
+
+    def _attachfile(self,id,**attachdata):
+
+        # Munge from the format we're given to the one BZ4.0 expects
+        data = {}
+        data['ids'] = [id]
+        data['data'] = attachdata['data']
+        data['is_patch'] = attachdata['ispatch']
+        data['file_name'] = attachdata['filename']
+        data['summary'] = attachdata['description']
+        data['content_type'] = attachdata['contenttype']
+
+        a = self._proxy.Bug.add_attachment(data)
+        return (a['id'], a)
+
